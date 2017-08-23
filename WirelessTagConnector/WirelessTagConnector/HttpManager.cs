@@ -12,8 +12,8 @@ namespace WirelessTagConnector
 {
     public class HttpManager
     {
-        string BASE_ADDRESS = "https://www.mytaglist.com";
-        string AUTH_API_SUB_ADDRESS = "/oauth2/access_token.aspx";
+        string BASE_ADDRESS = ConfigurationSetting.BaseAddress;//"https://my.wirelesstag.net";// "https://www.mytaglist.com";
+        string AUTH_API_SUB_ADDRESS = ConfigurationSetting.AuthApiSubAddess;
         public string CLIENT_SUB_ADDRESS = "/ethClient.asmx/";
         public string GET_TAG_LIST = "GetTagList";
         string CLIENT_ID = ConfigurationSetting.Client_Id;
