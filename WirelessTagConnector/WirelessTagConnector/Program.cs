@@ -13,6 +13,7 @@ namespace WirelessTagConnector
     class Program
     {
         static System.Timers.Timer processTimer;
+        static List<string> ConnectionStrings = new List<string>() { ConfigurationSetting.ConnectionString,ConfigurationSetting.DemoDBConnectionString};
         static void Main(string[] args)
         {
             
@@ -46,11 +47,16 @@ namespace WirelessTagConnector
                 DateTime timeStamp = DateTime.UtcNow;
                 Console.WriteLine("*****************Updating Time for ===== " + timeStamp.ToString());
                 var sensors = GetUpdatedSensorInfo();
-                foreach (var sensor in sensors)
+                foreach(var connectionString in ConnectionStrings)
                 {
-                    AddSensorData(sensor, timeStamp);
-                    Console.WriteLine("             Updated value for Sensor :: " + sensor.name);
+                    Console.WriteLine("======Inserting for connection==== " + ConnectionStrings.IndexOf(connectionString));
+                    foreach (var sensor in sensors)
+                    {
+                        AddSensorData(sensor, timeStamp, connectionString);
+                        Console.WriteLine("             Updated value for Sensor :: " + sensor.name);
+                    }
                 }
+                
             }
 
             catch (Exception ex)
@@ -67,14 +73,14 @@ namespace WirelessTagConnector
             return JsonConvert.DeserializeObject<SensorsDataModel>(jsonResponse).d;
         }
 
-        static void AddSensorData(D sensorInfo,DateTime timeStamp)
+        static void AddSensorData(D sensorInfo,DateTime timeStamp,string connectionString)
         {
             string sensorDataInsertQuery = "INSERT INTO SensorData([Wireless Tag Template],[TimeStamp],[Brightness],[Humidity],[Name],[Temperature],[PIIntTSTicks],[PIIntShapeID]) VALUES (@WirelessTagTemplate,@TimeStamp,@Brightness,@Humidity,@Name,@Temperature,@PIIntTSTicks,@PIIntShapeID)";
 
             try
             {
 
-                using (SqlConnection sqlConnection = new SqlConnection(ConfigurationSetting.ConnectionString))
+                using (SqlConnection sqlConnection = new SqlConnection(connectionString))
                 {
                     sqlConnection.Open();
                     using (SqlTransaction sqlTransaction = sqlConnection.BeginTransaction())
