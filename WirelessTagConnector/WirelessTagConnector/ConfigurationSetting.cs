@@ -15,7 +15,12 @@ namespace WirelessTagConnector
         public static readonly string Client_Code = GetConfigData("ClientCode");
         public static readonly string AuthApiSubAddess = GetConfigData("AuthApiSubAddress");
         public static readonly string BaseAddress = GetConfigData("BaseAddress");
-        
+
+        public static readonly string UFL_Api_Address = GetConfigData("UFLApiAddress");
+        public static readonly string UFL_Api_Username = GetConfigData("UFLApiUsername");
+        public static readonly string UFL_Api_Password = GetConfigData("UFLApiPassword");
+        public static readonly bool IsPosterService = Convert.ToBoolean(GetConfigData("IsPosterService"));
+
 
         private static string GetConfigData(string key)
         {

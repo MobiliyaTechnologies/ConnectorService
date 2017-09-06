@@ -15,7 +15,6 @@ namespace WirelessTagConnector
         static System.Timers.Timer processTimer;
         static void Main(string[] args)
         {
-            
             ThreadStart t1 = new ThreadStart(repeatProcess);
             Thread childMeterThread = new Thread(t1);
             childMeterThread.Start();
@@ -48,8 +47,16 @@ namespace WirelessTagConnector
                 var sensors = GetUpdatedSensorInfo();
                 foreach (var sensor in sensors)
                 {
-                    AddSensorData(sensor, timeStamp);
-                    Console.WriteLine("             Updated value for Sensor :: " + sensor.name);
+                    if(ConfigurationSetting.IsPosterService)
+                    {
+                        PutSensorDataToUFLServer(sensors.IndexOf(sensor).ToString(),sensor, timeStamp);
+                        Console.WriteLine("             Updated value for Sensor :: " + sensor.name +"  and Sensor iD"+ sensors.IndexOf(sensor).ToString());
+                    }
+                    else
+                    {
+                        AddSensorData(sensor, timeStamp);
+                        Console.WriteLine("             Updated value for Sensor :: " + sensor.name);
+                    }                   
                 }
             }
 
@@ -73,7 +80,6 @@ namespace WirelessTagConnector
 
             try
             {
-
                 using (SqlConnection sqlConnection = new SqlConnection(ConfigurationSetting.ConnectionString))
                 {
                     sqlConnection.Open();
@@ -101,6 +107,14 @@ namespace WirelessTagConnector
             {
                 Console.WriteLine("Exception occured in AddSensorData() " + ex.Message);
             }
+        }
+
+        static void PutSensorDataToUFLServer(string Id ,D sensorInfo, DateTime timeStamp)
+        {
+            string posterData = "" + sensorInfo.name + "," + Id + "," + sensorInfo.temperature + "," + sensorInfo.cap + "," + sensorInfo.lux;
+            Console.WriteLine(" Poster Data string is ::: " + posterData);
+            HttpManager.GetInstance().PutDataToUFLConnector(posterData);
+
         }
         public static double ConvertCelsiusToFahrenheit(double c)
         {
