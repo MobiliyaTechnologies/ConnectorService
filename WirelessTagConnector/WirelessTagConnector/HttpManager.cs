@@ -14,6 +14,7 @@ namespace WirelessTagConnector
     {
         string BASE_ADDRESS = ConfigurationSetting.BaseAddress;//"https://my.wirelesstag.net";// "https://www.mytaglist.com";
         string AUTH_API_SUB_ADDRESS = ConfigurationSetting.AuthApiSubAddess;
+        string UFL_API_ADDRESS = ConfigurationSetting.UFL_Api_Address;
         public string CLIENT_SUB_ADDRESS = "/ethClient.asmx/";
         public string GET_TAG_LIST = "GetTagList";
         string CLIENT_ID = ConfigurationSetting.Client_Id;
@@ -105,6 +106,42 @@ namespace WirelessTagConnector
                 var payload = JObject.Parse(response.Content.ReadAsStringAsync().Result);
                 this.Token = payload.Value<string>("access_token");
             }               
+        }
+
+        public string PutDataToUFLConnector(string requestData = "")
+        {
+            string response = null;
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    Uri reqUri = new Uri(UFL_API_ADDRESS);
+
+                    String username = ConfigurationSetting.UFL_Api_Username;
+                    String password = ConfigurationSetting.UFL_Api_Password;
+
+                    Console.WriteLine("username is ::: " + username + " and Password is :::" + password);
+                    String encoded = System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(username + ":" + password));
+                    Console.WriteLine("Base64 string of credentials ::: " + encoded);
+                    if (Token != null)
+                       
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",encoded);
+                   
+                    Console.WriteLine("Request uri is ::" + reqUri);
+                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Put, reqUri);
+                    request.Content = new StringContent(requestData, Encoding.UTF8);
+
+                    var responseMsg = client.SendAsync(request).Result;
+                    responseMsg.EnsureSuccessStatusCode();
+                    response = responseMsg.Content.ReadAsStringAsync().Result;
+                }
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception occured :: " + e.Message);
+            }
+            return response;
         }
 
     }
