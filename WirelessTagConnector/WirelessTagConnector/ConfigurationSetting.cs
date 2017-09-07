@@ -10,6 +10,7 @@ namespace WirelessTagConnector
     public class ConfigurationSetting
     {
         public static readonly string ConnectionString = GetConfigData("PiConnectionString");
+        public static readonly string DemoDBConnectionString = GetConfigData("PiDemoConnectionString");
         public static readonly string Client_Id = GetConfigData("ClientId");
         public static readonly string Client_Secret = GetConfigData("ClientSecret");
         public static readonly string Client_Code = GetConfigData("ClientCode");
