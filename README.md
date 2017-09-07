@@ -29,16 +29,16 @@ EM Connector Utility is a console application, which does either of below things
 
 * Download this project.
 * Configure App.config file of WirelessTagConnector project.
-	** PiConnectionString : Local database connection string
-	** ClientId : Wireless Tag Client Id
-	** ClientSecret : Wireless Tag Client Secret
-	** ClientCode : Wireless Tag Code (Generates after following the given steps [here](https://my.wirelesstag.net/eth/outh2_apps.html/) ) 
-	** BaseAddress : WirelessTag Api Server Address (Eg: https://my.wirelesstag.net)
-	** AuthApiSubAddress : WirelessTag Api Auth sub-url
-	** UFLApiUsername : User mapping PI Interface Identity Username used for  UFL Connector Server Authentication
-	** UFLApiPassword : User mapping PI Interface Identity password used for  UFL Connector Server Authentication
-	** UFLApiAddress : UFL Connector REST Server address
-	** IsPosterService : Sets to true(If you want to send data to UFL Connector Server) or false (If you want to push sensor data to local SQL database)
+	* PiConnectionString : Local database connection string
+	* ClientId : Wireless Tag Client Id
+	* ClientSecret : Wireless Tag Client Secret
+	* ClientCode : Wireless Tag Code (Generates after following the given steps [here](https://my.wirelesstag.net/eth/outh2_apps.html/) ) 
+	* BaseAddress : WirelessTag Api Server Address (Eg: https://my.wirelesstag.net)
+	* AuthApiSubAddress : WirelessTag Api Auth sub-url
+	* UFLApiUsername : User mapping PI Interface Identity Username used for  UFL Connector Server Authentication
+	* UFLApiPassword : User mapping PI Interface Identity password used for  UFL Connector Server Authentication
+	* UFLApiAddress : UFL Connector REST Server address
+	* IsPosterService : Sets to true(If you want to send data to UFL Connector Server) or false (If you want to push sensor data to local SQL database)
 * Build EMConnectorSetup project.
 * Browse to EMConnectorSetup Project Path/Release/
 * Find EMConnectorSetup.msi and run it.
