@@ -13,10 +13,9 @@ namespace WirelessTagConnector
     class Program
     {
         static System.Timers.Timer processTimer;
-        static List<string> ConnectionStrings = new List<string>() { ConfigurationSetting.ConnectionString,ConfigurationSetting.DemoDBConnectionString};
+        static List<string> ConnectionStrings = new List<string>() { ConfigurationSetting.ConnectionString, ConfigurationSetting.DemoDBConnectionString };
         static void Main(string[] args)
         {
-            
             ThreadStart t1 = new ThreadStart(repeatProcess);
             Thread childMeterThread = new Thread(t1);
             childMeterThread.Start();
@@ -47,16 +46,31 @@ namespace WirelessTagConnector
                 DateTime timeStamp = DateTime.UtcNow;
                 Console.WriteLine("*****************Updating Time for ===== " + timeStamp.ToString());
                 var sensors = GetUpdatedSensorInfo();
-                foreach(var connectionString in ConnectionStrings)
+
+
+               
+                foreach (var sensor in sensors)
                 {
-                    Console.WriteLine("======Inserting for connection==== " + ConnectionStrings.IndexOf(connectionString));
-                    foreach (var sensor in sensors)
+
+                    if (ConfigurationSetting.IsPosterService)
                     {
-                        AddSensorData(sensor, timeStamp, connectionString);
-                        Console.WriteLine("             Updated value for Sensor :: " + sensor.name);
+                        PutSensorDataToUFLServer(sensors.IndexOf(sensor).ToString(), sensor, timeStamp);
+                        Console.WriteLine("             Updated value for Sensor :: " + sensor.name + "  and Sensor iD" + sensors.IndexOf(sensor).ToString());
                     }
+                    else
+                    {
+                        foreach (var connectionString in ConnectionStrings)
+                        {
+                            Console.WriteLine("======Inserting for connection==== " + ConnectionStrings.IndexOf(connectionString));
+                            AddSensorData(sensor, timeStamp, connectionString);
+                            Console.WriteLine("             Updated value for Sensor :: " + sensor.name);
+                        }
+                    }
+
                 }
-                
+
+
+
             }
 
             catch (Exception ex)
@@ -73,14 +87,14 @@ namespace WirelessTagConnector
             return JsonConvert.DeserializeObject<SensorsDataModel>(jsonResponse).d;
         }
 
-        static void AddSensorData(D sensorInfo,DateTime timeStamp,string connectionString)
+        static void AddSensorData(D sensorInfo, DateTime timeStamp, string connectionString)
         {
             string sensorDataInsertQuery = "INSERT INTO SensorData([Wireless Tag Template],[TimeStamp],[Brightness],[Humidity],[Name],[Temperature],[PIIntTSTicks],[PIIntShapeID]) VALUES (@WirelessTagTemplate,@TimeStamp,@Brightness,@Humidity,@Name,@Temperature,@PIIntTSTicks,@PIIntShapeID)";
 
             try
             {
-
                 using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+
                 {
                     sqlConnection.Open();
                     using (SqlTransaction sqlTransaction = sqlConnection.BeginTransaction())
@@ -90,7 +104,7 @@ namespace WirelessTagConnector
 
                             cmd.Parameters.AddWithValue("@WirelessTagTemplate", sensorInfo.name);
                             cmd.Parameters.AddWithValue("@TimeStamp", timeStamp);
-                            cmd.Parameters.AddWithValue("@Brightness",sensorInfo.lux);
+                            cmd.Parameters.AddWithValue("@Brightness", sensorInfo.lux);
                             cmd.Parameters.AddWithValue("@Humidity", sensorInfo.cap);
                             cmd.Parameters.AddWithValue("@Name", sensorInfo.name);
                             cmd.Parameters.AddWithValue("@Temperature", ConvertCelsiusToFahrenheit(sensorInfo.temperature));
@@ -107,6 +121,14 @@ namespace WirelessTagConnector
             {
                 Console.WriteLine("Exception occured in AddSensorData() " + ex.Message);
             }
+        }
+
+        static void PutSensorDataToUFLServer(string Id, D sensorInfo, DateTime timeStamp)
+        {
+            string posterData = "" + sensorInfo.name + "," + Id + "," + sensorInfo.temperature + "," + sensorInfo.cap + "," + sensorInfo.lux;
+            Console.WriteLine(" Poster Data string is ::: " + posterData);
+            HttpManager.GetInstance().PutDataToUFLConnector(posterData);
+
         }
         public static double ConvertCelsiusToFahrenheit(double c)
         {
