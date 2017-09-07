@@ -9,7 +9,7 @@ EM Connector Utility is a console application, which does either of below things
 ### Prerequisites
 
 * Visual Studio 2017 with Other Project types(Visual Studio installer type) installed.
-* Wireless Tag credentials (ClientID,ClientSecret,ClientCode),WirelessTag Api Server Base Address,WirelessTag Api Auth sub-url (Eg: /oauth2/access_token.aspx).You will get it from [here](https://my.wirelesstag.net/eth/outh2_apps.html/)
+* Wireless Tag credentials (ClientID,ClientSecret,ClientCode),WirelessTag Api Server Base Address,WirelessTag Api Auth sub-url (Eg: /oauth2/access_token.aspx).You will get it from [here](https://my.wirelesstag.net/eth/oauth2_apps.html)
 * OSI UFL Connector Server Address (eg : https://<Domain Address>:<Port Number>/connectordata/<Data Source Name>/)
 * User mapping PI Interface Identity credentials (Username, Password).
 * Local SQL Database connection string(Pi Server Database string).
@@ -32,7 +32,7 @@ EM Connector Utility is a console application, which does either of below things
 	* PiConnectionString : Local database connection string
 	* ClientId : Wireless Tag Client Id
 	* ClientSecret : Wireless Tag Client Secret
-	* ClientCode : Wireless Tag Code (Generates after following the given steps [here](https://my.wirelesstag.net/eth/outh2_apps.html/) ) 
+	* ClientCode : Wireless Tag Code (Generates after following the given steps [here](https://my.wirelesstag.net/eth/oauth2_apps.html) ) 
 	* BaseAddress : WirelessTag Api Server Address (Eg: https://my.wirelesstag.net)
 	* AuthApiSubAddress : WirelessTag Api Auth sub-url
 	* UFLApiUsername : User mapping PI Interface Identity Username used for  UFL Connector Server Authentication
